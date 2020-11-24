@@ -1,48 +1,129 @@
 class Node{
-    constructor(){
-        // a Node starts with a given data property
-        // a Node also has a .next property initialized as null
+    constructor(data){
+      this.data = data;
+      this.next = null;
     }
-}
-
-class LinkedList{
-    constructor(){
-        // a Linked List starts with a "head" property intialized as null
+  }
+  class LinkedList {
+    constructor(data=null){
+      if (data !== null){
+        this.head = new Node(data);
+      }else{
+        this.head = null;
+      }
     }
     appendNode(data){
-        // creates a new node with the given data and adds it to back of the list
+      const node = new Node(data);
+      if (this.head === null){
+        this.head = node;
+      }else{
+        let current_node = this.head;
+        while (current_node.next !== null){
+          current_node = current_node.next;
+        }
+        current_node.next = node;
+      }
     }
     prependNode(data){
-        // creates a new node with the given data and adds it to the front of the list
+      const node = new Node(data);
+      node.next = this.head;
+      this.head = node;
     }
     pop(){
-        // removes the last node from the list and returns it
+      let _node = this.head;
+      let length=0;
+      while (_node !== null){
+        length += 1 ;
+        _node = _node.next;
+      }
+      return this.removeAt(length-1);
     }
     removeFromFront(){
-        // remove the head node from the list and return it
-        // the next node in the list is the new head node
+      const previous_head = this.head;
+      this.head = this.head.next;
+      return previous_head;
     }
     insertAt(X, data){
-        // insert a new node into the list with the given data
-        // place it after X nodes in the list
-        // if X exceeds the bounds of the list, put the node at the end
-        // insertAt(0, 7) would add the new node as the head
+      const new_node = new Node(data);
+      let check_node = this.head;
+      if (X === 0){
+        const next_node = this.head;
+        this.head = new_node;
+        new_node.next = next_node;
+      }else{
+        let index = 1;
+        while (index !== X){
+          check_node = check_node.next;
+          index +=1;
+        }
+        const previous_next = check_node.next;
+        check_node.next = new_node;
+        new_node.next = previous_next;
+      }
     }
     removeAt(X){
-        // remove the Xth node from the list, considering 0 to be the first node
-        // return the node that has been removed
+      let current_node = this.head;
+      let index = 0;
+      if (X === index){
+        const new_head = this.head.next;
+        this.head = new_head;
+      }else{
+        let next_node;
+        let previous_node;
+        while ((current_node !== null) && (index !== X)){
+          previous_node = current_node;
+          current_node = current_node.next;
+          if (current_node === null){
+            next_node = null;
+          }else{
+            next_node = current_node.next;
+          }
+          index +=1;
+        }
+        if (next_node === null){
+          previous_node.next = null;
+        }else{
+          previous_node.next = next_node;
+        }
+      }
+      return current_node;
     }
     search(data){
-        // searches the list for a node with the given data
-        // if it is found, return the "index" of the node, considering 0 to be the first node
-        // if not, return false
+      let current_node = this.head
+      let index = 0;
+      while ((current_node !== null ) && (current_node.data !== data)){
+        current_node = current_node.next;
+        index += 1;
+      }
+      if (current_node === null){
+        return false;
+      }else{
+        return index;
+      }
     }
     sort(){
-        // sort the Linked List in ascending order of data values
+      let current_node = this.head;
+      let node_array = [];
+      let node_array_data = [];
+      while (current_node !== null) {
+        node_array.push(current_node);
+        node_array_data.push(current_node.data);
+        current_node = current_node.next;
+      }
+      node_array_data = node_array_data.sort((a,b) => a-b);
+      let index_node = 0;
+      this.head = null;
+      while (index_node !== node_array_data.length) {
+        for (let i=0; i<node_array.length; i++){
+          if (node_array[i].data === node_array_data[index_node]){
+            this.appendNode(node_array[i].data);
+          }
+        }
+        index_node += 1;
+      }
     }
-}
-
-module.exports = {
-    Node,
-    LinkedList
-}
+  }
+  module.exports = {
+      Node,
+      LinkedList
+  }
